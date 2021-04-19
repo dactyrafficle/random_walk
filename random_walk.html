@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<div id='container'></div>
+
+<script src='../scripts/hist.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.16/p5.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.16/addons/p5.dom.min.js"></script>
+
+<script>
+
+let n = 3;
+let walkers = [];
+
+let histogram = {};
+for (let i = -100; i < 100; i++) {
+ histogram[i/100] = 0;
+}
+
+function setup() {
+  var c = createCanvas(1200, 600);
+  c.parent('container');
+  for (let i = 0; i < n; i++) {
+    let r = 1;
+    let s = r*2;
+    walkers.push(new RandomWalker(0, height/2, r, s));
+  }
+  background(51);
+  console.log(histogram);
+  
+}
+
+function draw() {
+  
+  for (let i = 0; i < walkers.length; i++) {
+    walkers[i].walk();
+    walkers[i].display();
+  }
+ 
+}
+
+function RandomWalker(x, y, r, s) {
+  this.x = x;
+  this.y = y;
+  this.r = r;
+  this.s = s;
+}
+
+RandomWalker.prototype.walk = function() {
+ let x = Math.random()-Math.random();
+ let y = Math.floor(x*100)/100;
+ //console.log(y);
+ 
+ this.dy = x*this.s;
+ 
+
+ histogram[y] = histogram[y] + 1;
+ 
+ let count = histogram[y];
+ //console.log(y + ': ' + count);
+ fill(170, 220, 170, 50);
+ noStroke();
+ ellipse((y+1)/2*width, height-25-count/2, this.r*2, this.r*2);
+ 
+ this.y += this.dy;
+ this.x += this.s;
+ if (this.x > width) {
+  this.x = 0;
+ }
+
+}
+
+RandomWalker.prototype.display = function() {
+ noStroke();
+ fill(255, 205, 0, 35);
+ ellipse(this.x, this.y, this.r*2, this.r*2)
+}
+
+</script>
+
+</html>
